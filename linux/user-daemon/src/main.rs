@@ -43,11 +43,13 @@ use softu2f_system_daemon::{
 use u2f_core::{OpenSSLCryptoOperations, U2fService};
 use u2fhid_protocol::{Packet, U2fHidServer};
 use user_presence::NotificationUserPresence;
+use user_presence_pkexec::PolkitUserPresence;
 
 mod atomic_file;
 mod config;
 mod secret_store;
 mod user_presence;
+mod user_presence_pkexec;
 
 const AUTHORS: &str = env!("CARGO_PKG_AUTHORS");
 const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
@@ -114,7 +116,8 @@ async fn main() {
 
 async fn run(system_daemon_socket: &Path) -> Result<(), Error> {
     let config = config::Config::load()?;
-    let user_presence = NotificationUserPresence::new();
+    // let user_presence = NotificationUserPresence::new();
+    let user_presence = PolkitUserPresence::new();
     let attestation = u2f_core::self_signed_attestation();
     let crypto = OpenSSLCryptoOperations::new(attestation);
     let secrets = secret_store::build(&config)?;

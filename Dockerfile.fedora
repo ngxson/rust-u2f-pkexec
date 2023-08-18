@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:37
 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
@@ -6,7 +6,7 @@ ENV RUSTUP_HOME=/usr/local/rustup \
 
 RUN yum -y groupinstall 'Development Tools' && \
     yum -y install \
-      clang \
+    clang-15.0.0 \
       dbus-devel \
       libselinux-devel \
       openssl-devel \
@@ -37,5 +37,11 @@ RUN cargo test --release
 RUN cd linux && make rpm
 
 RUN mkdir -p dist/ && cp -r target/fedora/* dist/
+
+
+# Stage 2
+
+FROM fedora:37
+COPY --from=0 /app/dist /app/dist
 
 CMD ["/bin/bash"]

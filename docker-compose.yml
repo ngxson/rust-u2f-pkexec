@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  rust-u2f:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.fedora
+    command: "cp -r /app/dist /outside/dist"
+    volumes:
+      - ./dist:/outside/dist
